@@ -44,12 +44,6 @@ const (
 */
 type EventChangeExternalContactAddExternalContact struct {
 	EventChangeExternalContact
-	ToUserName     string `xml:"ToUserName"`
-	FromUserName   string `xml:"FromUserName"`
-	CreateTime     string `xml:"CreateTime"`
-	MsgType        string `xml:"MsgType"`
-	Event          string `xml:"Event"`
-	ChangeType     string `xml:"ChangeType"`
 	UserID         string `xml:"UserID"`
 	ExternalUserID string `xml:"ExternalUserID"`
 	State          string `xml:"State"`
@@ -71,12 +65,6 @@ type EventChangeExternalContactAddExternalContact struct {
 */
 type EventChangeExternalContactEditExternalContact struct {
 	EventChangeExternalContact
-	ToUserName     string `xml:"ToUserName"`
-	FromUserName   string `xml:"FromUserName"`
-	CreateTime     string `xml:"CreateTime"`
-	MsgType        string `xml:"MsgType"`
-	Event          string `xml:"Event"`
-	ChangeType     string `xml:"ChangeType"`
 	UserID         string `xml:"UserID"`
 	ExternalUserID string `xml:"ExternalUserID"`
 	State          string `xml:"State"`
@@ -97,12 +85,6 @@ type EventChangeExternalContactEditExternalContact struct {
 */
 type EventChangeExternalContactAddHalfExternalContact struct {
 	EventChangeExternalContact
-	ToUserName     string `xml:"ToUserName"`
-	FromUserName   string `xml:"FromUserName"`
-	CreateTime     string `xml:"CreateTime"`
-	MsgType        string `xml:"MsgType"`
-	Event          string `xml:"Event"`
-	ChangeType     string `xml:"ChangeType"`
 	UserID         string `xml:"UserID"`
 	ExternalUserID string `xml:"ExternalUserID"`
 	State          string `xml:"State"`
@@ -122,12 +104,6 @@ type EventChangeExternalContactAddHalfExternalContact struct {
 */
 type EventChangeExternalContactDelExternalContact struct {
 	EventChangeExternalContact
-	ToUserName     string `xml:"ToUserName"`
-	FromUserName   string `xml:"FromUserName"`
-	CreateTime     string `xml:"CreateTime"`
-	MsgType        string `xml:"MsgType"`
-	Event          string `xml:"Event"`
-	ChangeType     string `xml:"ChangeType"`
 	UserID         string `xml:"UserID"`
 	ExternalUserID string `xml:"ExternalUserID"`
 }
@@ -144,10 +120,5 @@ type EventChangeExternalContactDelExternalContact struct {
 */
 type EventChangeExternalContactChangeExternalChat struct {
 	EventChangeExternalContact
-	ToUserName   string `xml:"ToUserName"`
-	FromUserName string `xml:"FromUserName"`
-	CreateTime   string `xml:"CreateTime"`
-	MsgType      string `xml:"MsgType"`
-	Event        string `xml:"Event"`
-	ChatId       string `xml:"ChatId"`
+	ChatId string `xml:"ChatId"`
 }
