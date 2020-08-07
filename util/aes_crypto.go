@@ -39,7 +39,7 @@ func decodeNetworkByteOrder(b []byte) (n uint32) {
 
 // AESEncryptMsg 消息加密
 // ciphertext = AES_Encrypt[random(16B) + msg_len(4B) + rawXMLMsg + appId]
-func AESEncryptMsg(random, rawXMLMsg []byte, appId string, encodingAESKey string) (ciphertext string) {
+func AESEncryptMsg(random, rawXMLMsg []byte, appId string, encodingAESKey string) (ciphertext string, err error) {
 	aesKey, _ := base64.StdEncoding.DecodeString(encodingAESKey + "=")
 	const (
 		BLOCK_SIZE = 32             // PKCS#7
@@ -67,12 +67,12 @@ func AESEncryptMsg(random, rawXMLMsg []byte, appId string, encodingAESKey string
 	// 加密
 	block, err := aes.NewCipher(aesKey)
 	if err != nil {
-		panic(err)
+		return
 	}
 	mode := cipher.NewCBCEncrypter(block, aesKey[:16])
 	mode.CryptBlocks(plaintext, plaintext)
 
-	return base64.StdEncoding.EncodeToString(plaintext)
+	return base64.StdEncoding.EncodeToString(plaintext),nil
 }
 
 // AESDecryptMsg 消息解密

@@ -15,16 +15,21 @@
 package corporation
 
 import (
+	"bytes"
+	"crypto/sha1"
 	"encoding/xml"
 	"fmt"
+	"github.com/fastwego/wechat4work/corporation/type/type_event"
+	"github.com/fastwego/wechat4work/corporation/type/type_message"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
-	"reflect"
+	"sort"
+	"strings"
 	"testing"
-
-	"github.com/fastwego/wechat4work/corporation/type/type_message"
 )
 
 var MockCorporation *Corporation
@@ -34,11 +39,12 @@ func TestMain(m *testing.M) {
 	MockCorporation = New(CorporationConfig{
 		Corpid: "CROPID",
 	})
+	MockCorporation.SetLogger(nil)
 	MockApp = MockCorporation.NewApp(AppConfig{
 		AgentId:        "AGENTID",
 		Secret:         "SERET",
 		Token:          "Token",
-		EncodingAESKey: "EncodingAESKey",
+		EncodingAESKey: "TfuodSKwmagZ0iCvQU2yfOWvOt8VLU5S5D85PcbOCMs",
 	})
 	os.Exit(m.Run())
 }
@@ -46,35 +52,18 @@ func TestMain(m *testing.M) {
 func TestServer_ParseXML(t *testing.T) {
 
 	type args struct {
+		params url.Values
 		body []byte
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantM   interface{}
 		wantErr bool
 	}{
 		{
 			name: "case1",
-			args: args{body: []byte(`
-			<xml>
-			  <ToUserName><![CDATA[toUser]]></ToUserName>
-			  <FromUserName><![CDATA[fromUser]]></FromUserName>
-			  <CreateTime>1348831860</CreateTime>
-			  <MsgType><![CDATA[text]]></MsgType>
-			  <Content><![CDATA[this is a test]]></Content>
-			  <MsgId>1234567890123456</MsgId>
-			</xml>
-			`)},
-			wantM: type_message.MessageText{
-				Message: type_message.Message{
-					ToUserName:   "toUser",
-					FromUserName: "fromUser",
-					CreateTime:   "1348831860",
-					MsgType:      "text",
-				},
-				MsgId:   "1234567890123456",
-				Content: "this is a test",
+			args: args{
+				body: []byte(`<xml><ToUserName><![CDATA[ww4ffb2457362fa91a]]></ToUserName><Encrypt><![CDATA[yzY09xkWVovVOxPTwSYfIFVRO92WzZiKxWXGZLeoAMYPqh1DLdt3Ph3vASJHpLZ3DZF8laEEx1A1ySJGogWBOKZn9QFqANkFj4GnWX2qheHLuCyCvHtHp/Jx6qnqQTRL0RpRvBa2OPCuMufQYEFi0UX4RpXsxS2oQnOCcnob3PJxIOFIs5kc4hxgRpbiAjy3f54tbwyJzzO2qq4ZpzpxOsmFUsJhuWROhK+ltW8VvSrVjhfeFZmcF3WLzk8ShSXowuQeF69kP80gZAbpdT/NFkeuP7L45+o5z/g5D+0xbalxWctGr5yM1C6p8ILJGDRUP2JdoKd3n+PBSKSQJBz98sgRJgjDZyCbxFa03yq77UbZn3sQKpwqFInqorHUvn47YWcQoSsohLiuhdB4m9zVa/sQ0f+cT9umemuQjvT7u6aNr1SAtYCN6kTkTh2gUMxhRfr+iy/kU7NK8dKQojBRXw==]]></Encrypt><AgentID><![CDATA[1000004]]></AgentID></xml>`),
 			},
 			wantErr: false,
 		},
@@ -82,45 +71,40 @@ func TestServer_ParseXML(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotM, err := MockApp.Server.ParseXML(tt.args.body)
+
+			timestamp := "1596792211"
+			nonce := "nonce"
+			encryptMsg := "yzY09xkWVovVOxPTwSYfIFVRO92WzZiKxWXGZLeoAMYPqh1DLdt3Ph3vASJHpLZ3DZF8laEEx1A1ySJGogWBOKZn9QFqANkFj4GnWX2qheHLuCyCvHtHp/Jx6qnqQTRL0RpRvBa2OPCuMufQYEFi0UX4RpXsxS2oQnOCcnob3PJxIOFIs5kc4hxgRpbiAjy3f54tbwyJzzO2qq4ZpzpxOsmFUsJhuWROhK+ltW8VvSrVjhfeFZmcF3WLzk8ShSXowuQeF69kP80gZAbpdT/NFkeuP7L45+o5z/g5D+0xbalxWctGr5yM1C6p8ILJGDRUP2JdoKd3n+PBSKSQJBz98sgRJgjDZyCbxFa03yq77UbZn3sQKpwqFInqorHUvn47YWcQoSsohLiuhdB4m9zVa/sQ0f+cT9umemuQjvT7u6aNr1SAtYCN6kTkTh2gUMxhRfr+iy/kU7NK8dKQojBRXw=="
+
+			strs := []string{
+				timestamp,
+				nonce,
+				MockApp.Config.Token,
+				encryptMsg,
+			}
+			sort.Strings(strs)
+
+			h := sha1.New()
+			_, _ = io.WriteString(h, strings.Join(strs, ""))
+			signature := fmt.Sprintf("%x", h.Sum(nil))
+
+			tt.args.params = url.Values{
+				`msg_signature`:[]string{signature},
+				`timestamp`:[]string{timestamp},
+				`nonce`:[]string{nonce},
+			}
+
+			request, _ := http.NewRequest(http.MethodPost, "http://127.0.0.1?"+tt.args.params.Encode(), bytes.NewReader(tt.args.body))
+
+			gotM, err := MockApp.Server.ParseXML(request)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ParseXML() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotM, tt.wantM) {
-				t.Errorf("ParseXML() gotM = %v, want %v", gotM, tt.wantM)
-			}
-		})
-	}
-}
-
-func TestReplyMessage(t *testing.T) {
-	tests := []struct {
-		name     string
-		wantEcho string
-	}{
-		{
-			name:     "case1",
-			wantEcho: `<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[你好]]></Content></xml>`,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// 回复文本消息
-			msg := type_message.ReplyMessageText{
-				ReplyMessage: type_message.ReplyMessage{
-					ToUserName:   "toUser",
-					FromUserName: "fromUser",
-					CreateTime:   "12345678",
-					MsgType:      type_message.ReplyMsgTypeText,
-				},
-				Content: "你好",
-			}
-			data, err := xml.Marshal(msg)
-			fmt.Println(string(data), err)
-
-			if tt.wantEcho != string(data) {
-				t.Errorf("\nwant %s \nget %s", tt.wantEcho, string(data))
+			_, ok := gotM.(type_event.EventMenuView)
+			if !ok {
+				t.Error("Not type_event.EventMenuView")
+				return
 			}
 		})
 	}
@@ -170,6 +154,43 @@ func TestServer_EchoStr(t *testing.T) {
 
 			if tt.wantEcho != echo {
 				t.Errorf("want %s but get %s", tt.wantEcho, echo)
+			}
+		})
+	}
+}
+
+func TestServer_Response(t *testing.T) {
+
+	mockRequest := httptest.NewRequest("GET", "http://example.com/foo", nil)
+	recorder := httptest.NewRecorder()
+
+	type args struct {
+		writer  http.ResponseWriter
+		request *http.Request
+		reply   interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{name: "case1",args: args{writer:recorder, request: mockRequest,reply: ""},wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := MockApp.Server.Response(tt.args.writer, tt.args.request, tt.args.reply)
+			if  (err != nil) != tt.wantErr {
+				t.Errorf("Response() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			resp := recorder.Result()
+			body, _ := ioutil.ReadAll(resp.Body)
+
+			encryptReply := type_message.ReplyEncryptMessage{}
+			_ = xml.Unmarshal(body, &encryptReply)
+
+			if  encryptReply.Encrypt == "" {
+				t.Errorf("Encrypt not found")
 			}
 		})
 	}

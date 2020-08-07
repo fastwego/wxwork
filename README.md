@@ -2,7 +2,32 @@
 
 A fast wechat4work development framework written in Golang
 
-## 演示 Demo
+## 快速开始 & demo
+
+```shell script
+go get -u github.com/fastwego/wechat4work
+```
+
+```go
+
+// 创建企业实例
+Corp = corporation.New(corporation.CorporationConfig{Corpid: "CROPID"})
+
+//创建通讯录 App
+ContactApp = Corp.NewApp(corporation.AppConfig{
+    AgentId:        "AGENTID",
+    Secret:         "SECRET",
+    Token:          "TOKEN",
+    EncodingAESKey: "EncodingAESKey",
+})
+
+// 通讯录管理 -> 获取部门成员详情
+params := url.Values{}
+params.Add("department_id", "10086")
+resp, err := contact.UserList(ContactApp, params)
+```
+
+完整演示项目：
 
 [https://github.com/fastwego/wechat4work-demo](https://github.com/fastwego/wechat4work-demo)
 

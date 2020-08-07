@@ -81,21 +81,21 @@ func New(config CorporationConfig) (corporation *Corporation) {
 	instance := Corporation{
 		Config: config,
 	}
-	instance.Logger = log.New(os.Stdout, "[corporation:"+config.Corpid+"]", log.LstdFlags|log.Llongfile)
+	instance.Logger = log.New(os.Stdout, "[corporation:"+config.Corpid+"] ", log.LstdFlags|log.Llongfile)
 	return &instance
 }
 
 /*
 创建应用实例
 */
-func (corp *Corporation) NewApp(config AppConfig) (app *App) {
+func (corporation *Corporation) NewApp(config AppConfig) (app *App) {
 	instance := App{
 		Config: config,
 		AccessToken: AccessToken{
 			Cache:                 file.New(os.TempDir()),
 			GetAccessTokenHandler: GetAccessToken,
 		},
-		Corporation: corp,
+		Corporation: corporation,
 	}
 	instance.Client = Client{Ctx: &instance}
 	instance.Server = Server{Ctx: &instance}

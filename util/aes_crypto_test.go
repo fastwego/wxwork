@@ -40,7 +40,7 @@ func TestAESEncryptMsg(t *testing.T) {
 		"rpZ4WpYPsrythXHE2Bg1Ohz8uf5h5X31yuU/3FPoa8rD21pfZnAjBT1QCkn6MxtL5lR+yoQReLwElVbtB6yJFPIZ+n9Qh/yKfIasxkzgIE" +
 		"o0pwPEbS17WCTyvRItJtU6tlo3rawJX+fsV63tKIfmLZjyZPDlV9/ka/nA/DT0KODw=="
 
-	base64Ciphertext := AESEncryptMsg(random, plaintext, appId, encodingAESKey)
+	base64Ciphertext, _ := AESEncryptMsg(random, plaintext, appId, encodingAESKey)
 	if base64Ciphertext != wantBase64Ciphertext {
 		t.Errorf("tests AESEncryptMsg failed,\nhave: %s\nwant: %s\n", base64Ciphertext, wantBase64Ciphertext)
 		return

@@ -31,7 +31,6 @@ const (
 	ReplyMsgTypeVideo                   = "video"
 	ReplyMsgTypeMusic                   = "music"
 	ReplyMsgTypeNews                    = "news"
-	ReplyMsgTypeTransferCustomerService = "transfer_customer_service" // 消息转发到(指定)客服
 )
 
 type ReplyMessage struct {

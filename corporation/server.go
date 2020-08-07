@@ -19,6 +19,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"sort"
 	"strconv"
@@ -68,14 +69,8 @@ func (s *Server) EchoStr(writer http.ResponseWriter, request *http.Request) {
 	if signature == request.URL.Query().Get("msg_signature") {
 
 		// 解密 echoStr
-		_, msg, appId, err := util.AESDecryptMsg(echoStr, s.Ctx.Config.EncodingAESKey)
+		_, msg, _, err := util.AESDecryptMsg(echoStr, s.Ctx.Config.EncodingAESKey)
 		if err != nil {
-			return
-		}
-		if string(appId) != s.Ctx.Config.AgentId {
-			if s.Ctx.Corporation.Logger != nil {
-				s.Ctx.Corporation.Logger.Printf("AgentId Not Match: %s != %s",appId,s.Ctx.Config.AgentId)
-			}
 			return
 		}
 
@@ -102,34 +97,59 @@ POST /api/callback?msg_signature=ASDFQWEXZCVAQFASDFASDFSS
    <Encrypt><![CDATA[msg_encrypt]]></Encrypt>
 </xml>
  */
-func (s *Server) ParseXML(body []byte) (m interface{}, err error) {
+func (s *Server) ParseXML(request *http.Request) (m interface{}, err error) {
+	var body []byte
+	body, err = ioutil.ReadAll(request.Body)
+	if err != nil {
+		return
+	}
 
 	if s.Ctx.Corporation.Logger != nil {
 		s.Ctx.Corporation.Logger.Println(string(body))
 	}
 
-	// 是否加密消息
+	// 加密格式 的消息
 	encryptMsg := messagetype.EncryptMessage{}
 	err = xml.Unmarshal(body, &encryptMsg)
 	if err != nil {
 		return
 	}
 
-	// 需要解密
-	if encryptMsg.Encrypt != "" {
-		var xmlMsg []byte
-		_, xmlMsg, _, err = util.AESDecryptMsg(encryptMsg.Encrypt, s.Ctx.Config.EncodingAESKey)
-		if err != nil {
-			return
-		}
-		body = xmlMsg
+	// 验证签名
+	strs := []string{
+		request.URL.Query().Get("timestamp"),
+		request.URL.Query().Get("nonce"),
+		s.Ctx.Config.Token,
+		encryptMsg.Encrypt,
+	}
+	sort.Strings(strs)
 
-		if s.Ctx.Corporation.Logger != nil {
-			s.Ctx.Corporation.Logger.Println("AESDecryptMsg ", string(body))
-		}
+	h := sha1.New()
+	_, _ = io.WriteString(h, strings.Join(strs, ""))
+	signature := fmt.Sprintf("%x", h.Sum(nil))
 
+	if msgSignature := request.URL.Query().Get("msg_signature"); signature != msgSignature {
+		err = fmt.Errorf("%s != %s", signature, msgSignature)
+		return
 	}
 
+	// 解密
+	var xmlMsg []byte
+	_, xmlMsg, _, err = util.AESDecryptMsg(encryptMsg.Encrypt, s.Ctx.Config.EncodingAESKey)
+	if err != nil {
+		return
+	}
+	body = xmlMsg
+
+	if s.Ctx.Corporation.Logger != nil {
+		s.Ctx.Corporation.Logger.Println("AESDecryptMsg ", string(body))
+	}
+
+	return parseMsg(body)
+}
+
+// 解析消息/事件
+func parseMsg(body []byte) (m interface{}, err error) {
 	message := messagetype.Message{}
 	err = xml.Unmarshal(body, &message)
 	fmt.Println(message)
@@ -183,6 +203,7 @@ func (s *Server) ParseXML(body []byte) (m interface{}, err error) {
 	case messagetype.MsgTypeEvent:
 		return parseEvent(body)
 	}
+
 	return
 }
 
@@ -196,7 +217,184 @@ func parseEvent(body []byte) (m interface{}, err error) {
 	switch event.Event {
 	// 事件
 	case eventtype.EventTypeChangeContact:
-		msg := eventtype.EventChangeContactCreateParty{}
+		msg := eventtype.EventChangeContact{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		switch msg.ChangeType {
+		case eventtype.EventTypeChangeContactCreateUser:
+			msg := eventtype.EventChangeContactCreateUser{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeContactUpdateUser:
+			msg := eventtype.EventChangeContactUpdateUser{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeContactDeleteUser:
+			msg := eventtype.EventChangeContactDeleteUser{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeContactCreateParty:
+			msg := eventtype.EventChangeContactCreateParty{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeContactUpdateParty:
+			msg := eventtype.EventChangeContactUpdateParty{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeContactDeleteParty:
+			msg := eventtype.EventChangeContactDeleteParty{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeContactUpdateTag:
+			msg := eventtype.EventChangeContactUpdateTag{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		}
+	case eventtype.EventTypeBatchJobResult:
+		msg := eventtype.EventBatchJobResult{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeApproval:
+		msg := eventtype.EventApproval{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeChangeExternalContact:
+		msg := eventtype.EventChangeExternalContact{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		switch msg.ChangeType {
+		case eventtype.EventTypeChangeExternalContactAddExternalContact:
+			msg := eventtype.EventChangeExternalContactAddExternalContact{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeExternalContactAddHalfExternalContact:
+			msg := eventtype.EventChangeExternalContactAddHalfExternalContact{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeExternalContactChangeExternalChat:
+			msg := eventtype.EventChangeExternalContactChangeExternalChat{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeExternalContactDelExternalContact:
+			msg := eventtype.EventChangeExternalContactDelExternalContact{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeExternalContactEditExternalContact:
+			msg := eventtype.EventChangeExternalContactEditExternalContact{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		case eventtype.EventTypeChangeExternalContactDelFollowUser:
+			msg := eventtype.EventChangeExternalContactDelFollowUser{}
+			err = xml.Unmarshal(body, &msg)
+			if err != nil {
+				return
+			}
+			return msg, nil
+		}
+	case eventtype.EventTypeTaskCardClick:
+		msg := eventtype.EventTaskCardClick{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeMenuView:
+		msg := eventtype.EventMenuView{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeMenuClick:
+		msg := eventtype.EventMenuClick{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeMenuLocationSelect:
+		msg := eventtype.EventMenuLocationSelect{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeMenuPicSysPhoto:
+		msg := eventtype.EventMenuPicSysPhoto{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeMenuPicSysPhotoOrAlbum:
+		msg := eventtype.EventMenuPicSysPhotoOrAlbum{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeMenuPicWeixin:
+		msg := eventtype.EventMenuPicWeixin{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeMenuScanCodePush:
+		msg := eventtype.EventMenuScanCodePush{}
+		err = xml.Unmarshal(body, &msg)
+		if err != nil {
+			return
+		}
+		return msg, nil
+	case eventtype.EventTypeMenuScanCodeWaitMsg:
+		msg := eventtype.EventMenuScanCodeWaitMsg{}
 		err = xml.Unmarshal(body, &msg)
 		if err != nil {
 			return
@@ -218,7 +416,12 @@ func (s *Server) Response(writer http.ResponseWriter, request *http.Request, rep
 		}
 
 		// 加密
-		message := s.encryptReplyMessage(output)
+		var message messagetype.ReplyEncryptMessage
+		message, err = s.encryptReplyMessage(output)
+		if err != nil {
+			return
+		}
+
 		output, err = xml.Marshal(message)
 		if err != nil {
 			return
@@ -236,8 +439,11 @@ func (s *Server) Response(writer http.ResponseWriter, request *http.Request, rep
 }
 
 // encryptReplyMessage 加密回复消息
-func (s *Server) encryptReplyMessage(rawXmlMsg []byte) (replyEncryptMessage messagetype.ReplyEncryptMessage) {
-	cipherText := util.AESEncryptMsg([]byte(util.GetRandString(16)), rawXmlMsg, s.Ctx.Config.AgentId, s.Ctx.Config.EncodingAESKey)
+func (s *Server) encryptReplyMessage(rawXmlMsg []byte) (replyEncryptMessage messagetype.ReplyEncryptMessage, err error) {
+	cipherText, err := util.AESEncryptMsg([]byte(util.GetRandString(16)), rawXmlMsg, s.Ctx.Config.AgentId, s.Ctx.Config.EncodingAESKey)
+	if err != nil {
+		return
+	}
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 	nonce := util.GetRandString(6)
 
@@ -257,5 +463,5 @@ func (s *Server) encryptReplyMessage(rawXmlMsg []byte) (replyEncryptMessage mess
 		MsgSignature: signature,
 		TimeStamp:    timestamp,
 		Nonce:        nonce,
-	}
+	}, nil
 }

@@ -63,7 +63,6 @@ type EncryptMessage struct {
 */
 type MessageText struct {
 	Message
-	MsgId   string
 	Content string
 }
 
@@ -80,7 +79,6 @@ type MessageText struct {
 */
 type MessageImage struct {
 	Message
-	MsgId   string
 	PicUrl  string
 	MediaId string
 }
@@ -100,7 +98,6 @@ type MessageImage struct {
 */
 type MessageVoice struct {
 	Message
-	MsgId       string
 	Format      string
 	Recognition string
 }
@@ -119,7 +116,6 @@ type MessageVoice struct {
 */
 type MessageVideo struct {
 	Message
-	MsgId        string
 	MediaId      string
 	ThumbMediaId string
 }
@@ -140,7 +136,6 @@ type MessageVideo struct {
 */
 type MessageLocation struct {
 	Message
-	MsgId      string
 	Location_X string
 	Location_Y string
 	Scale      string
@@ -161,7 +156,6 @@ type MessageLocation struct {
 */
 type MessageLink struct {
 	Message
-	MsgId       string
 	Title       string
 	Description string
 	Url         string
