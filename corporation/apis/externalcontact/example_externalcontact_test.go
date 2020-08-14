@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/fastwego/wechat4work/corporation"
-	"github.com/fastwego/wechat4work/corporation/apis/externalcontact"
+	"github.com/fastwego/wxwork/corporation"
+	"github.com/fastwego/wxwork/corporation/apis/externalcontact"
 )
 
 func ExampleGetFollowUserList() {

@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/fastwego/wechat4work/corporation"
-	"github.com/fastwego/wechat4work/corporation/apis/contact"
+	"github.com/fastwego/wxwork/corporation"
+	"github.com/fastwego/wxwork/corporation/apis/contact"
 )
 
 func ExampleUserCreate() {

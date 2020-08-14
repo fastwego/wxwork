@@ -15,7 +15,7 @@
 // Package util 开发辅助
 package util
 
-import "github.com/fastwego/wechat4work/corporation"
+import "github.com/fastwego/wxwork/corporation"
 
 const (
 	apiGetApiDomainIp = "/cgi-bin/get_api_domain_ip"

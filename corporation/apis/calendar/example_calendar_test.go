@@ -17,8 +17,8 @@ package calendar_test
 import (
 	"fmt"
 
-	"github.com/fastwego/wechat4work/corporation"
-	"github.com/fastwego/wechat4work/corporation/apis/calendar"
+	"github.com/fastwego/wxwork/corporation"
+	"github.com/fastwego/wxwork/corporation/apis/calendar"
 )
 
 func ExampleCalendarAdd() {

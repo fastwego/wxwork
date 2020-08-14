@@ -17,8 +17,8 @@ package oa_test
 import (
 	"fmt"
 
-	"github.com/fastwego/wechat4work/corporation"
-	"github.com/fastwego/wechat4work/corporation/apis/oa"
+	"github.com/fastwego/wxwork/corporation"
+	"github.com/fastwego/wxwork/corporation/apis/oa"
 )
 
 func ExampleGetCheckinData() {

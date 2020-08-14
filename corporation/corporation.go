@@ -34,14 +34,14 @@ type GetAccessTokenFunc func(ctx *App) (accessToken string, err error)
 Corporation 企业实例
 */
 type Corporation struct {
-	Config CorporationConfig
+	Config Config
 	Logger *log.Logger
 }
 
 /*
 配置
 */
-type CorporationConfig struct {
+type Config struct {
 	Corpid string
 }
 
@@ -77,7 +77,7 @@ type AccessToken struct {
 /*
 创建企业实例
 */
-func New(config CorporationConfig) (corporation *Corporation) {
+func New(config Config) (corporation *Corporation) {
 	instance := Corporation{
 		Config: config,
 	}

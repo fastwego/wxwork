@@ -10,4 +10,4 @@
 - 根据配置的 `EncodingAESKey` 加密消息后输出给微信
 - 如果不需要即时回复用户消息，`Response` 会自动回复 `success` 告知微信服务器正常响应
 
-完整用例请参见 [https://github.com/fastwego/wechat4work-demo](https://github.com/fastwego/wechat4work-demo)
+完整用例请参见 [https://github.com/fastwego/wxwork-demo](https://github.com/fastwego/wxwork-demo)

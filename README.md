@@ -1,17 +1,17 @@
-# fastwego/wechat4work 
+# fastwego/wxwork 
 
-A fast wechat4work development framework written in Golang
+A fast [wxwork](https://work.weixin.qq.com/api/doc) development sdk written in Golang
 
 ## 快速开始 & demo
 
 ```shell script
-go get -u github.com/fastwego/wechat4work
+go get github.com/fastwego/wxwork
 ```
 
 ```go
 
 // 创建企业实例
-Corp = corporation.New(corporation.CorporationConfig{Corpid: "CROPID"})
+Corp = corporation.New(corporation.Config{Corpid: "CROPID"})
 
 //创建通讯录 App
 ContactApp = Corp.NewApp(corporation.AppConfig{
@@ -29,7 +29,11 @@ resp, err := contact.UserList(ContactApp, params)
 
 完整演示项目：
 
-[https://github.com/fastwego/wechat4work-demo](https://github.com/fastwego/wechat4work-demo)
+[https://github.com/fastwego/wxwork-demo](https://github.com/fastwego/wxwork-demo)
+
+接口列表：
+
+[corporation/doc/apilist.md](corporation/doc/apilist.md)
 
 ## 架构设计
 
@@ -42,7 +46,7 @@ resp, err := contact.UserList(ContactApp, params)
 「快」作为框架设计的核心理念，体现在方方面面：
 
 - 使用 Go 语言，开发快、编译快、部署快、运行快，轻松服务海量用户
-- 丰富的[文档](https://pkg.go.dev/github.com/fastwego/wechat4work) / [教程](corporation/doc/SUMMARY.md) 和 [演示代码](https://github.com/fastwego/wechat4work-demo) ，快速上手，5 分钟即可搭建一套完整的微信公众号服务
+- 丰富的[文档](https://pkg.go.dev/github.com/fastwego/wxwork) / [教程](corporation/doc/SUMMARY.md) 和 [演示代码](https://github.com/fastwego/wxwork-demo) ，快速上手，5 分钟即可搭建一套完整的微信服务
 - 独立清晰的模块划分，快速熟悉整个框架，没有意外，一切都是你期望的样子
 - 甚至连框架自身的大部分代码也是自动生成的，维护更新快到超乎想象
 
@@ -76,17 +80,13 @@ resp, err := contact.UserList(ContactApp, params)
 
 单台服务器支撑不住访问流量/想提高服务可用性？
 
-只需重载 GetAccessTokenFunc 方法，从中控服务获取 AccessToken，即可解决多实例刷新冲突/覆盖的问题
+只需 [设置 GetAccessTokenFunc 方法](https://pkg.go.dev/github.com/fastwego/wxwork/corporation?tab=doc#App.SetGetAccessTokenHandler) ，从中控服务获取 AccessToken，即可解决多实例刷新冲突/覆盖的问题
 
 ### 活跃的开发者社区
 
 FastWeGo 是一套完整的微信开发框架，包括公众号、开放平台、微信支付、企业微信、小程序、小游戏等微信服务，拥有庞大的开发者用户群体
 
 你遇到的所有问题几乎都可以在社区找到解决方案
-
-## 接口列表
-
-[doc/apilist.md](corporation/doc/apilist.md)
 
 ## 参与贡献
 

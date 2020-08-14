@@ -19,8 +19,8 @@ import (
 	"crypto/sha1"
 	"encoding/xml"
 	"fmt"
-	"github.com/fastwego/wechat4work/corporation/type/type_event"
-	"github.com/fastwego/wechat4work/corporation/type/type_message"
+	"github.com/fastwego/wxwork/corporation/type/type_event"
+	"github.com/fastwego/wxwork/corporation/type/type_message"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -36,7 +36,7 @@ var MockCorporation *Corporation
 var MockApp *App
 
 func TestMain(m *testing.M) {
-	MockCorporation = New(CorporationConfig{
+	MockCorporation = New(Config{
 		Corpid: "CROPID",
 	})
 	MockCorporation.SetLogger(nil)

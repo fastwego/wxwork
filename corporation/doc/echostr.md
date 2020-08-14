@@ -7,4 +7,4 @@
 - 接收到微信 GET 请求后，通过框架提供的 `EchoStr` 可以解析出对应参数
 - 如果校验成功，会输出 `echostr` 完成校验
 
-完整用例请参见 [https://github.com/fastwego/wechat4work-demo](https://github.com/fastwego/wechat4work-demo)
+完整用例请参见 [https://github.com/fastwego/wxwork-demo](https://github.com/fastwego/wxwork-demo)

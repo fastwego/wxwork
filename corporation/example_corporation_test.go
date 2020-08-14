@@ -20,7 +20,7 @@ import (
 
 	"github.com/faabiosr/cachego/file"
 	"github.com/faabiosr/cachego/sync"
-	"github.com/fastwego/wechat4work/corporation"
+	"github.com/fastwego/wxwork/corporation"
 	"github.com/garyburd/redigo/redis"
 )
 

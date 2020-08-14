@@ -17,8 +17,8 @@ package health_test
 import (
 	"fmt"
 
-	"github.com/fastwego/wechat4work/corporation"
-	"github.com/fastwego/wechat4work/corporation/apis/health"
+	"github.com/fastwego/wxwork/corporation"
+	"github.com/fastwego/wxwork/corporation/apis/health"
 )
 
 func ExampleGetHealthReportStat() {

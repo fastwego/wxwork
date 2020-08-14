@@ -17,8 +17,8 @@ package invoice_test
 import (
 	"fmt"
 
-	"github.com/fastwego/wechat4work/corporation"
-	"github.com/fastwego/wechat4work/corporation/apis/invoice"
+	"github.com/fastwego/wxwork/corporation"
+	"github.com/fastwego/wxwork/corporation/apis/invoice"
 )
 
 func ExampleGetInvoiceInfo() {

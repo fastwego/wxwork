@@ -23,7 +23,7 @@ import (
 
 func TestClient_getAccessToken(t *testing.T) {
 
-	var MockCorporation = New(CorporationConfig{
+	var MockCorporation = New(Config{
 		Corpid: "ID",
 	})
 

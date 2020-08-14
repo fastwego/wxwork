@@ -17,8 +17,8 @@ package meetingroom_test
 import (
 	"fmt"
 
-	"github.com/fastwego/wechat4work/corporation"
-	"github.com/fastwego/wechat4work/corporation/apis/meetingroom"
+	"github.com/fastwego/wxwork/corporation"
+	"github.com/fastwego/wxwork/corporation/apis/meetingroom"
 )
 
 func ExampleAdd() {

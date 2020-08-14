@@ -1,4 +1,4 @@
-module github.com/fastwego/wechat4work
+module github.com/fastwego/wxwork
 
 go 1.14
 

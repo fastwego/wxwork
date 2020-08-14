@@ -26,10 +26,10 @@ import (
 	"strings"
 	"time"
 
-	eventtype "github.com/fastwego/wechat4work/corporation/type/type_event"
-	messagetype "github.com/fastwego/wechat4work/corporation/type/type_message"
+	eventtype "github.com/fastwego/wxwork/corporation/type/type_event"
+	messagetype "github.com/fastwego/wxwork/corporation/type/type_message"
 
-	"github.com/fastwego/wechat4work/util"
+	"github.com/fastwego/wxwork/util"
 )
 
 /*

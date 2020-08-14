@@ -21,8 +21,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/fastwego/wechat4work/corporation"
-	"github.com/fastwego/wechat4work/corporation/test"
+	"github.com/fastwego/wxwork/corporation"
+	"github.com/fastwego/wxwork/corporation/test"
 )
 
 func TestMain(m *testing.M) {

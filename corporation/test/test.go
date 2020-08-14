@@ -20,7 +20,7 @@ import (
 	"net/http/httptest"
 	"sync"
 
-	"github.com/fastwego/wechat4work/corporation"
+	"github.com/fastwego/wxwork/corporation"
 )
 
 var MockCorporation *corporation.Corporation
@@ -33,7 +33,7 @@ var onceSetup sync.Once
 func Setup() {
 	onceSetup.Do(func() {
 
-		MockCorporation = corporation.New(corporation.CorporationConfig{
+		MockCorporation = corporation.New(corporation.Config{
 			Corpid: "Cropid",
 		})
 		MockApp = MockCorporation.NewApp(corporation.AppConfig{
