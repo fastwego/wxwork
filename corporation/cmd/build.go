@@ -80,7 +80,7 @@ func apilist() {
 				api.FuncName = strcase.ToCamel(path.Base(parse.Path))
 			}
 
-			godocLink := fmt.Sprintf("https://pkg.go.dev/github.com/fastwego/corporation/%s?tab=doc#%s", group.Package, api.FuncName)
+			godocLink := fmt.Sprintf("https://pkg.go.dev/github.com/fastwego/wechat4work/corporation/apis/%s?tab=doc#%s", group.Package, api.FuncName)
 			fmt.Printf("\t- [%s](%s) \n\t\t- [%s (%s)](%s)\n", api.Name, api.See, api.FuncName, parse.Path, godocLink)
 		}
 	}
