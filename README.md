@@ -2,6 +2,9 @@
 
 A fast [wxwork](https://work.weixin.qq.com/api/doc) development sdk written in Golang
 
+[![GoDoc](https://pkg.go.dev/badge/github.com/fastwego/wxwork?status.svg)](https://pkg.go.dev/github.com/fastwego/wxwork?tab=doc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fastwego/wxwork)](https://goreportcard.com/report/github.com/fastwego/wxwork)
+
 ## 快速开始 & demo
 
 ```shell script
