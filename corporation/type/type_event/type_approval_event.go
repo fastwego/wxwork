@@ -15,7 +15,7 @@
 package type_event
 
 const (
-	EventTypeApproval              = "open_approval_change"              // 审批状态事件
+	EventTypeApproval = "open_approval_change" // 审批状态事件
 )
 
 /*
@@ -71,10 +71,10 @@ const (
     <approverstep>0</approverstep>
   </ApprovalInfo>
 </xml>
- */
+*/
 type EventApproval struct {
 	Event
-	AgentID      string   `xml:"AgentID"`
+	AgentID      string `xml:"AgentID"`
 	ApprovalInfo struct {
 		Text           string `xml:",chardata"`
 		ThirdNo        string `xml:"ThirdNo"`

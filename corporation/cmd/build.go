@@ -60,7 +60,7 @@ func main() {
 	for _, group := range apiConfig {
 
 		if group.Package == pkgFlag {
-		build(group)
+			build(group)
 		}
 	}
 

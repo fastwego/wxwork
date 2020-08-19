@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	EventTypeTaskCardClick              = "taskcard_click"              // 任务卡片事件
+	EventTypeTaskCardClick = "taskcard_click" // 任务卡片事件
 )
 
 type Event struct {
@@ -42,10 +42,10 @@ type Event struct {
 <TaskId><![CDATA[taskid111]]></TaskId >
 <AgentId>1</AgentId>
 </xml>
- */
+*/
 type EventTaskCardClick struct {
 	Event
-	EventKey     string   `xml:"EventKey"`
-	TaskId       string   `xml:"TaskId"`
-	AgentId      string   `xml:"AgentId"`
+	EventKey string `xml:"EventKey"`
+	TaskId   string `xml:"TaskId"`
+	AgentId  string `xml:"AgentId"`
 }

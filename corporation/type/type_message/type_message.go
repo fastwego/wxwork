@@ -17,13 +17,13 @@ package type_message
 import "encoding/xml"
 
 const (
-	MsgTypeText       = "text"
-	MsgTypeImage      = "image"
-	MsgTypeVoice      = "voice"
-	MsgTypeVideo      = "video"
-	MsgTypeLocation   = "location"
-	MsgTypeLink       = "link"
-	MsgTypeEvent      = "event"
+	MsgTypeText     = "text"
+	MsgTypeImage    = "image"
+	MsgTypeVoice    = "voice"
+	MsgTypeVideo    = "video"
+	MsgTypeLocation = "location"
+	MsgTypeLink     = "link"
+	MsgTypeEvent    = "event"
 )
 
 type Message struct {
@@ -32,8 +32,8 @@ type Message struct {
 	FromUserName string
 	CreateTime   string
 	MsgType      string
-	MsgId string
-	AgentID string
+	MsgId        string
+	AgentID      string
 }
 
 /*
@@ -48,7 +48,7 @@ type EncryptMessage struct {
 	XMLName    xml.Name `xml:"xml"`
 	ToUserName string
 	Encrypt    string
-	AgentID string
+	AgentID    string
 }
 
 /*

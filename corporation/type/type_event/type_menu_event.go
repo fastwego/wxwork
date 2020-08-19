@@ -39,7 +39,7 @@ const (
 type EventMenuClick struct {
 	Event
 	EventKey string
-	AgentID string
+	AgentID  string
 }
 
 /*
@@ -56,7 +56,7 @@ type EventMenuClick struct {
 type EventMenuView struct {
 	Event
 	EventKey string
-	AgentID   string
+	AgentID  string
 }
 
 /*
@@ -77,9 +77,9 @@ type EventMenuView struct {
 type EventMenuScanCodePush struct {
 	Event
 	EventKey     string
-	ScanCodeInfo struct{
-		ScanType     string
-		ScanResult   string
+	ScanCodeInfo struct {
+		ScanType   string
+		ScanResult string
 	}
 	AgentID string
 }
@@ -101,9 +101,9 @@ type EventMenuScanCodePush struct {
 type EventMenuScanCodeWaitMsg struct {
 	Event
 	EventKey     string
-	ScanCodeInfo struct{
-		ScanType     string
-		ScanResult   string
+	ScanCodeInfo struct {
+		ScanType   string
+		ScanResult string
 	}
 	AgentID string
 }
@@ -124,7 +124,7 @@ type EventMenuScanCodeWaitMsg struct {
 */
 type EventMenuPicSysPhoto struct {
 	Event
-	EventKey     string   `xml:"EventKey"`
+	EventKey     string `xml:"EventKey"`
 	SendPicsInfo struct {
 		Text    string `xml:",chardata"`
 		Count   string `xml:"Count"`
@@ -138,7 +138,6 @@ type EventMenuPicSysPhoto struct {
 	} `xml:"SendPicsInfo"`
 	AgentID string `xml:"AgentID"`
 }
-
 
 /*
 <xml><ToUserName><![CDATA[toUser]]></ToUserName>
@@ -158,7 +157,7 @@ type EventMenuPicSysPhoto struct {
 
 type EventMenuPicSysPhotoOrAlbum struct {
 	Event
-	EventKey     string   `xml:"EventKey"`
+	EventKey     string `xml:"EventKey"`
 	SendPicsInfo struct {
 		Text    string `xml:",chardata"`
 		Count   string `xml:"Count"`
@@ -172,7 +171,6 @@ type EventMenuPicSysPhotoOrAlbum struct {
 	} `xml:"SendPicsInfo"`
 	AgentID string `xml:"AgentID"`
 }
-
 
 /*
 <xml><ToUserName><![CDATA[toUser]]></ToUserName>
@@ -191,7 +189,7 @@ type EventMenuPicSysPhotoOrAlbum struct {
 */
 type EventMenuPicWeixin struct {
 	Event
-	EventKey     string   `xml:"EventKey"`
+	EventKey     string `xml:"EventKey"`
 	SendPicsInfo struct {
 		Text    string `xml:",chardata"`
 		Count   string `xml:"Count"`
@@ -205,7 +203,6 @@ type EventMenuPicWeixin struct {
 	} `xml:"SendPicsInfo"`
 	AgentID string `xml:"AgentID"`
 }
-
 
 /*
 <xml><ToUserName><![CDATA[toUser]]></ToUserName>
@@ -227,7 +224,7 @@ type EventMenuPicWeixin struct {
 
 type EventMenuLocationSelect struct {
 	Event
-	EventKey         string   `xml:"EventKey"`
+	EventKey         string `xml:"EventKey"`
 	SendLocationInfo struct {
 		Text      string `xml:",chardata"`
 		LocationX string `xml:"Location_X"`
@@ -239,5 +236,3 @@ type EventMenuLocationSelect struct {
 	AgentID string `xml:"AgentID"`
 	AppType string `xml:"AppType"`
 }
-
-

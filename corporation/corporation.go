@@ -47,7 +47,7 @@ type Config struct {
 
 /*
 应用
- */
+*/
 type App struct {
 	Config      AppConfig
 	AccessToken AccessToken
@@ -58,7 +58,7 @@ type App struct {
 
 /*
 应用配置
- */
+*/
 type AppConfig struct {
 	AgentId        string
 	Secret         string

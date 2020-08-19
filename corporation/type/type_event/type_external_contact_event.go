@@ -25,7 +25,7 @@ const (
 	EventTypeChangeExternalContactEditExternalContact    = "edit_external_contact"     //编辑企业客户事件
 	EventTypeChangeExternalContactAddHalfExternalContact = "add_half_external_contact" //外部联系人免验证添加成员事件
 	EventTypeChangeExternalContactDelExternalContact     = "del_external_contact"      //删除企业客户事件
-	EventTypeChangeExternalContactDelFollowUser = "del_follow_user" // 删除跟进成员事件
+	EventTypeChangeExternalContactDelFollowUser          = "del_follow_user"           // 删除跟进成员事件
 	EventTypeChangeExternalContactChangeExternalChat     = "change_external_chat"      //客户群变更事件
 )
 
@@ -120,11 +120,11 @@ type EventChangeExternalContactDelExternalContact struct {
     <UserID><![CDATA[zhangsan]]></UserID>
     <ExternalUserID><![CDATA[woAJ2GCAAAXtWyujaWJHDDGi0mACHAAA]]></ExternalUserID>
 </xml>
- */
+*/
 type EventChangeExternalContactDelFollowUser struct {
 	EventChangeExternalContact
-	UserID         string   `xml:"UserID"`
-	ExternalUserID string   `xml:"ExternalUserID"`
+	UserID         string `xml:"UserID"`
+	ExternalUserID string `xml:"ExternalUserID"`
 }
 
 /**
