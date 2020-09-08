@@ -484,6 +484,37 @@ var apiConfigCrop = []ApiGroup{
 	},
 	{
 		Name:    `身份验证`,
+		Package: `oauth`,
+		Apis: []Api{
+			{
+				Name:        "构造网页授权链接",
+				Description: "如果企业需要在打开的网页里面携带用户的身份信息，第一步需要构造如下的链接来获取code参数 ",
+				Request:     "GET https://open.weixin.qq.com/connect/oauth2/authorize?appid=CORPID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect",
+				See:         "https://work.weixin.qq.com/api/doc/90000/90135/91022",
+				FuncName:    "GetAuthorizeUrl",
+				GetParams: []Param{
+					{Name: `appid`, Type: `string`},
+					{Name: `redirect_uri`, Type: `string`},
+					{Name: `response_type`, Type: `string`},
+					{Name: `scope`, Type: `string`},
+					{Name: `state`, Type: `string`},
+				},
+			},
+			{
+				Name:        "获取访问用户身份",
+				Description: "该接口用于根据code获取成员信息",
+				Request:     "GET https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=ACCESS_TOKEN&code=CODE",
+				See:         "https://work.weixin.qq.com/api/doc/90000/90135/91023",
+				FuncName:    "GetUserInfo",
+				GetParams: []Param{
+					{Name: `access_token`, Type: `string`},
+					{Name: `code`, Type: `string`},
+				},
+			},
+		},
+	},
+	{
+		Name:    `身份验证`,
 		Package: `verify`,
 		Apis: []Api{
 
