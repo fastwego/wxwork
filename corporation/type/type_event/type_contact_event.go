@@ -24,7 +24,7 @@ const (
 
 	EventTypeChangeContactCreateUser = "create_user" // 新增成员事件
 	EventTypeChangeContactUpdateUser = "update_user" // 更新成员事件
-	EventTypeChangeContactDeleteUser ="delete_user" // 删除成员事件
+	EventTypeChangeContactDeleteUser = "delete_user" // 删除成员事件
 
 	EventTypeChangeContactCreateParty = "create_party" // 新增部门事件
 	EventTypeChangeContactUpdateParty = "update_party" // 更新部门事件
@@ -79,19 +79,19 @@ const (
 */
 type EventChangeContactCreateUser struct {
 	EventChangeContact
-	UserID         string   `xml:"UserID"`
-	Name           string   `xml:"Name"`
-	Department     string   `xml:"Department"`
-	IsLeaderInDept string   `xml:"IsLeaderInDept"`
-	Position       string   `xml:"Position"`
-	Mobile         string   `xml:"Mobile"`
-	Gender         string   `xml:"Gender"`
-	Email          string   `xml:"Email"`
-	Status         string   `xml:"Status"`
-	Avatar         string   `xml:"Avatar"`
-	Alias          string   `xml:"Alias"`
-	Telephone      string   `xml:"Telephone"`
-	Address        string   `xml:"Address"`
+	UserID         string `xml:"UserID"`
+	Name           string `xml:"Name"`
+	Department     string `xml:"Department"`
+	IsLeaderInDept string `xml:"IsLeaderInDept"`
+	Position       string `xml:"Position"`
+	Mobile         string `xml:"Mobile"`
+	Gender         string `xml:"Gender"`
+	Email          string `xml:"Email"`
+	Status         string `xml:"Status"`
+	Avatar         string `xml:"Avatar"`
+	Alias          string `xml:"Alias"`
+	Telephone      string `xml:"Telephone"`
+	Address        string `xml:"Address"`
 	ExtAttr        struct {
 		Text string `xml:",chardata"`
 		Item []struct {
@@ -151,25 +151,25 @@ type EventChangeContactCreateUser struct {
         </Item>
     </ExtAttr>
 </xml>
- */
+*/
 
 type EventChangeContactUpdateUser struct {
 	EventChangeContact
-	ChangeType     string   `xml:"ChangeType"`
-	UserID         string   `xml:"UserID"`
-	NewUserID      string   `xml:"NewUserID"`
-	Name           string   `xml:"Name"`
-	Department     string   `xml:"Department"`
-	IsLeaderInDept string   `xml:"IsLeaderInDept"`
-	Position       string   `xml:"Position"`
-	Mobile         string   `xml:"Mobile"`
-	Gender         string   `xml:"Gender"`
-	Email          string   `xml:"Email"`
-	Status         string   `xml:"Status"`
-	Avatar         string   `xml:"Avatar"`
-	Alias          string   `xml:"Alias"`
-	Telephone      string   `xml:"Telephone"`
-	Address        string   `xml:"Address"`
+	ChangeType     string `xml:"ChangeType"`
+	UserID         string `xml:"UserID"`
+	NewUserID      string `xml:"NewUserID"`
+	Name           string `xml:"Name"`
+	Department     string `xml:"Department"`
+	IsLeaderInDept string `xml:"IsLeaderInDept"`
+	Position       string `xml:"Position"`
+	Mobile         string `xml:"Mobile"`
+	Gender         string `xml:"Gender"`
+	Email          string `xml:"Email"`
+	Status         string `xml:"Status"`
+	Avatar         string `xml:"Avatar"`
+	Alias          string `xml:"Alias"`
+	Telephone      string `xml:"Telephone"`
+	Address        string `xml:"Address"`
 	ExtAttr        struct {
 		Text string `xml:",chardata"`
 		Item []struct {
@@ -199,11 +199,11 @@ type EventChangeContactUpdateUser struct {
     <ChangeType>delete_user</ChangeType>
     <UserID><![CDATA[zhangsan]]></UserID>
 </xml>
- */
+*/
 type EventChangeContactDeleteUser struct {
 	EventChangeContact
-	ChangeType   string   `xml:"ChangeType"`
-	UserID       string   `xml:"UserID"`
+	ChangeType string `xml:"ChangeType"`
+	UserID     string `xml:"UserID"`
 }
 
 /*
@@ -220,15 +220,14 @@ type EventChangeContactDeleteUser struct {
     <Order>1</Order>
 </xml>
 
- */
+*/
 type EventChangeContactCreateParty struct {
 	EventChangeContact
-	ID           string   `xml:"Id"`
-	Name         string   `xml:"Name"`
-	ParentId     string   `xml:"ParentId"`
-	Order        string   `xml:"Order"`
+	ID       string `xml:"Id"`
+	Name     string `xml:"Name"`
+	ParentId string `xml:"ParentId"`
+	Order    string `xml:"Order"`
 }
-
 
 /*
 <xml>
@@ -246,10 +245,10 @@ type EventChangeContactCreateParty struct {
 */
 type EventChangeContactUpdateParty struct {
 	EventChangeContact
-	ID           string   `xml:"Id"`
-	Name         string   `xml:"Name"`
-	ParentId     string   `xml:"ParentId"`
-	Order        string   `xml:"Order"`
+	ID       string `xml:"Id"`
+	Name     string `xml:"Name"`
+	ParentId string `xml:"ParentId"`
+	Order    string `xml:"Order"`
 }
 
 /*
@@ -265,8 +264,7 @@ type EventChangeContactUpdateParty struct {
 */
 type EventChangeContactDeleteParty struct {
 	EventChangeContact
-	ID           string   `xml:"Id"`
-
+	ID string `xml:"Id"`
 }
 
 /*
@@ -283,14 +281,14 @@ type EventChangeContactDeleteParty struct {
     <AddPartyItems><![CDATA[1,2]]></AddPartyItems>
     <DelPartyItems><![CDATA[3,4]]></DelPartyItems>
 </xml>
- */
+*/
 type EventChangeContactUpdateTag struct {
 	EventChangeContact
-	TagId         string   `xml:"TagId"`
-	AddUserItems  string   `xml:"AddUserItems"`
-	DelUserItems  string   `xml:"DelUserItems"`
-	AddPartyItems string   `xml:"AddPartyItems"`
-	DelPartyItems string   `xml:"DelPartyItems"`
+	TagId         string `xml:"TagId"`
+	AddUserItems  string `xml:"AddUserItems"`
+	DelUserItems  string `xml:"DelUserItems"`
+	AddPartyItems string `xml:"AddPartyItems"`
+	DelPartyItems string `xml:"DelPartyItems"`
 }
 
 /*
@@ -305,10 +303,10 @@ type EventChangeContactUpdateTag struct {
 <ErrMsg><![CDATA[ok]]></ErrMsg>
 </BatchJob>
 </xml>
- */
+*/
 type EventBatchJobResult struct {
 	Event
-	BatchJob     struct {
+	BatchJob struct {
 		Text    string `xml:",chardata"`
 		JobId   string `xml:"JobId"`
 		JobType string `xml:"JobType"`

@@ -19,8 +19,6 @@ import (
 	"crypto/sha1"
 	"encoding/xml"
 	"fmt"
-	"github.com/fastwego/wxwork/corporation/type/type_event"
-	"github.com/fastwego/wxwork/corporation/type/type_message"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -30,6 +28,9 @@ import (
 	"sort"
 	"strings"
 	"testing"
+
+	"github.com/fastwego/wxwork/corporation/type/type_event"
+	"github.com/fastwego/wxwork/corporation/type/type_message"
 )
 
 var MockCorporation *Corporation
@@ -53,7 +54,7 @@ func TestServer_ParseXML(t *testing.T) {
 
 	type args struct {
 		params url.Values
-		body []byte
+		body   []byte
 	}
 	tests := []struct {
 		name    string
@@ -89,9 +90,9 @@ func TestServer_ParseXML(t *testing.T) {
 			signature := fmt.Sprintf("%x", h.Sum(nil))
 
 			tt.args.params = url.Values{
-				`msg_signature`:[]string{signature},
-				`timestamp`:[]string{timestamp},
-				`nonce`:[]string{nonce},
+				`msg_signature`: []string{signature},
+				`timestamp`:     []string{timestamp},
+				`nonce`:         []string{nonce},
 			}
 
 			request, _ := http.NewRequest(http.MethodPost, "http://127.0.0.1?"+tt.args.params.Encode(), bytes.NewReader(tt.args.body))
@@ -113,7 +114,7 @@ func TestServer_ParseXML(t *testing.T) {
 func TestServer_EchoStr(t *testing.T) {
 	MockApp.Config.Token = "QDG6eK"
 	MockApp.Config.AgentId = "wx5823bf96d3bd56c7"
-	MockApp.Config.EncodingAESKey="jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C"
+	MockApp.Config.EncodingAESKey = "jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C"
 	s := &Server{
 		Ctx: MockApp,
 	}
@@ -130,9 +131,9 @@ func TestServer_EchoStr(t *testing.T) {
 		{
 			name: "case1",
 			args: url.Values{
-				"timestamp": []string{"1409659589"},
-				"nonce":     []string{"263014780"},
-				"echostr":   []string{"P9nAzCzyDtyTWESHep1vC5X9xho/qYX3Zpb4yKa9SKld1DsH3Iyt3tP3zNdtp+4RPcs8TgAE7OaBO+FZXvnaqQ=="},
+				"timestamp":     []string{"1409659589"},
+				"nonce":         []string{"263014780"},
+				"echostr":       []string{"P9nAzCzyDtyTWESHep1vC5X9xho/qYX3Zpb4yKa9SKld1DsH3Iyt3tP3zNdtp+4RPcs8TgAE7OaBO+FZXvnaqQ=="},
 				"msg_signature": []string{"5c45ff5e21c57e6ad56bac8758b79b1d9ac89fd3"},
 			},
 			wantEcho: "1616140317555161061",
@@ -174,12 +175,12 @@ func TestServer_Response(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{name: "case1",args: args{writer:recorder, request: mockRequest,reply: ""},wantErr: false},
+		{name: "case1", args: args{writer: recorder, request: mockRequest, reply: ""}, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := MockApp.Server.Response(tt.args.writer, tt.args.request, tt.args.reply)
-			if  (err != nil) != tt.wantErr {
+			if (err != nil) != tt.wantErr {
 				t.Errorf("Response() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
@@ -189,7 +190,7 @@ func TestServer_Response(t *testing.T) {
 			encryptReply := type_message.ReplyEncryptMessage{}
 			_ = xml.Unmarshal(body, &encryptReply)
 
-			if  encryptReply.Encrypt == "" {
+			if encryptReply.Encrypt == "" {
 				t.Errorf("Encrypt not found")
 			}
 		})

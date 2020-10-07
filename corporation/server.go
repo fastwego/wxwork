@@ -39,7 +39,6 @@ type Server struct {
 	Ctx *App
 }
 
-
 /*
 EchoStr 服务器接口校验
 
@@ -47,7 +46,7 @@ msg_signature=ASDFQWEXZCVAQFASDFASDFSS
 &timestamp=13500001234
 &nonce=123412323
 &echostr=ENCRYPT_STR
- */
+*/
 func (s *Server) EchoStr(writer http.ResponseWriter, request *http.Request) {
 	echoStr := request.URL.Query().Get("echostr")
 	strs := []string{
@@ -80,9 +79,7 @@ func (s *Server) EchoStr(writer http.ResponseWriter, request *http.Request) {
 		}
 	}
 
-
 }
-
 
 /*
 ParseXML 解析微信推送过来的消息/事件
@@ -96,7 +93,7 @@ POST /api/callback?msg_signature=ASDFQWEXZCVAQFASDFASDFSS
    <AgentID><![CDATA[toAgentID]]></AgentID>
    <Encrypt><![CDATA[msg_encrypt]]></Encrypt>
 </xml>
- */
+*/
 func (s *Server) ParseXML(request *http.Request) (m interface{}, err error) {
 	var body []byte
 	body, err = ioutil.ReadAll(request.Body)

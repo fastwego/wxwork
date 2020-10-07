@@ -25,12 +25,12 @@ func (c CDATA) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 const (
-	ReplyMsgTypeText                    = "text"
-	ReplyMsgTypeImage                   = "image"
-	ReplyMsgTypeVoice                   = "voice"
-	ReplyMsgTypeVideo                   = "video"
-	ReplyMsgTypeMusic                   = "music"
-	ReplyMsgTypeNews                    = "news"
+	ReplyMsgTypeText  = "text"
+	ReplyMsgTypeImage = "image"
+	ReplyMsgTypeVoice = "voice"
+	ReplyMsgTypeVideo = "video"
+	ReplyMsgTypeMusic = "music"
+	ReplyMsgTypeNews  = "news"
 )
 
 type ReplyMessage struct {
@@ -92,7 +92,7 @@ type ReplyMessageText struct {
 */
 type ReplyMessageImage struct {
 	ReplyMessage
-	Image struct{
+	Image struct {
 		MediaId CDATA
 	}
 }
@@ -114,12 +114,10 @@ type ReplyMessageImage struct {
 type ReplyMessageVoice struct {
 	ReplyMessage
 
-	Voice struct{
+	Voice struct {
 		MediaId CDATA
 	}
-
 }
-
 
 /*
 <xml>
@@ -142,7 +140,6 @@ type ReplyMessageVideo struct {
 		Description CDATA
 	}
 }
-
 
 /*
 <xml>

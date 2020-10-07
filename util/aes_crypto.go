@@ -72,7 +72,7 @@ func AESEncryptMsg(random, rawXMLMsg []byte, appId string, encodingAESKey string
 	mode := cipher.NewCBCEncrypter(block, aesKey[:16])
 	mode.CryptBlocks(plaintext, plaintext)
 
-	return base64.StdEncoding.EncodeToString(plaintext),nil
+	return base64.StdEncoding.EncodeToString(plaintext), nil
 }
 
 // AESDecryptMsg 消息解密

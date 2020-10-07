@@ -27,10 +27,12 @@ import (
 	"time"
 )
 
-/*
-微信 api 服务器地址
-*/
-var WXServerUrl = "https://qyapi.weixin.qq.com"
+var (
+	WXServerUrl      = "https://qyapi.weixin.qq.com" // 微信 api 服务器地址
+	UserAgent        = "fastwego/wxwork"
+	ErrorAccessToken = errors.New("access token error")
+	ErrorSystemBusy  = errors.New("system busy")
+)
 
 /*
 HttpClient 用于向微信接口发送请求
@@ -41,36 +43,104 @@ type Client struct {
 
 // HTTPGet GET 请求
 func (client *Client) HTTPGet(uri string) (resp []byte, err error) {
-	uri, err = client.applyAccessToken(uri)
+	newUrl, err := client.applyAccessToken(uri)
 	if err != nil {
 		return
 	}
-	if client.Ctx.Corporation.Logger != nil {
-		client.Ctx.Corporation.Logger.Printf("GET %s", uri)
-	}
-	response, err := http.Get(WXServerUrl + uri)
+
+	req, err := http.NewRequest(http.MethodGet, WXServerUrl+newUrl, nil)
 	if err != nil {
 		return
 	}
-	defer response.Body.Close()
-	return responseFilter(response)
+
+	return client.httpDo(req)
 }
 
 //HTTPPost POST 请求
 func (client *Client) HTTPPost(uri string, payload io.Reader, contentType string) (resp []byte, err error) {
-	uri, err = client.applyAccessToken(uri)
+	newUrl, err := client.applyAccessToken(uri)
 	if err != nil {
 		return
 	}
-	if client.Ctx.Corporation.Logger != nil {
-		client.Ctx.Corporation.Logger.Printf("POST %s", uri)
+
+	req, err := http.NewRequest(http.MethodPost, WXServerUrl+newUrl, payload)
+	if err != nil {
+		return
 	}
-	response, err := http.Post(WXServerUrl+uri, contentType, payload)
+
+	req.Header.Add("Content-Type", contentType)
+
+	return client.httpDo(req)
+}
+
+//httpDo 执行 请求
+func (client *Client) httpDo(req *http.Request) (resp []byte, err error) {
+	req.Header.Add("User-Agent", UserAgent)
+
+	if client.Ctx.Corporation.Logger != nil {
+		client.Ctx.Corporation.Logger.Printf("%s %s Headers %v", req.Method, req.URL.String(), req.Header)
+	}
+
+	response, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return
 	}
 	defer response.Body.Close()
-	return responseFilter(response)
+
+	resp, err = responseFilter(response)
+
+	// 发现 access_token 过期
+	if err == ErrorAccessToken {
+
+		// 主动 通知 access_token 过期
+		err = client.Ctx.AccessToken.NoticeAccessTokenExpireHandler(client.Ctx)
+		if err != nil {
+			return
+		}
+
+		// 通知到位后 access_token 会被刷新，那么可以 retry 了
+		var accessToken string
+		accessToken, err = client.Ctx.AccessToken.GetAccessTokenHandler(client.Ctx)
+		if err != nil {
+			return
+		}
+
+		// 换新
+		q := req.URL.Query()
+		q.Set("access_token", accessToken)
+		req.URL.RawQuery = q.Encode()
+
+		if client.Ctx.Corporation.Logger != nil {
+			client.Ctx.Corporation.Logger.Printf("%v retry %s %s Headers %v", ErrorAccessToken, req.Method, req.URL.String(), req.Header)
+		}
+
+		response, err = http.DefaultClient.Do(req)
+		if err != nil {
+			return
+		}
+		defer response.Body.Close()
+
+		resp, err = responseFilter(response)
+	}
+
+	// -1 系统繁忙，此时请开发者稍候再试
+	// 重试一次
+	if err == ErrorSystemBusy {
+
+		if client.Ctx.Corporation.Logger != nil {
+			client.Ctx.Corporation.Logger.Printf("%v : retry %s %s Headers %v", ErrorSystemBusy, req.Method, req.URL.String(), req.Header)
+		}
+
+		response, err = http.DefaultClient.Do(req)
+		if err != nil {
+			return
+		}
+		defer response.Body.Close()
+
+		resp, err = responseFilter(response)
+	}
+
+	return
 }
 
 /*
@@ -116,11 +186,21 @@ func responseFilter(response *http.Response) (resp []byte, err error) {
 		return
 	}
 
+	if errorResponse.Errcode == 40014 {
+		err = ErrorAccessToken
+		return
+	}
+
+	//  -1	系统繁忙，此时请开发者稍候再试
+	if errorResponse.Errcode == -1 {
+		err = ErrorSystemBusy
+		return
+	}
+
 	if errorResponse.Errcode != 0 {
 		err = errors.New(string(resp))
 		return
 	}
-
 	return
 }
 
@@ -131,11 +211,10 @@ var refreshAccessTokenLock sync.Mutex
 从 公众号实例 的 AccessToken 管理器 获取 access_token
 
 如果没有 access_token 或者 已过期，那么刷新
-
-获得新的 access_token 后 过期时间设置为 0.9 * expiresIn 提供一定冗余
 */
 func GetAccessToken(app *App) (accessToken string, err error) {
-	accessToken, err = app.AccessToken.Cache.Fetch(app.Config.AgentId)
+	cacheKey := app.Config.AgentId + app.Config.Secret // 企业微信-系统应用没有 agentid ，所以需要secret 辅助
+	accessToken, err = app.AccessToken.Cache.Fetch(cacheKey)
 	if accessToken != "" {
 		return
 	}
@@ -143,7 +222,7 @@ func GetAccessToken(app *App) (accessToken string, err error) {
 	refreshAccessTokenLock.Lock()
 	defer refreshAccessTokenLock.Unlock()
 
-	accessToken, err = app.AccessToken.Cache.Fetch(app.Config.AgentId)
+	accessToken, err = app.AccessToken.Cache.Fetch(cacheKey)
 	if accessToken != "" {
 		return
 	}
@@ -153,15 +232,28 @@ func GetAccessToken(app *App) (accessToken string, err error) {
 		return
 	}
 
-	// 提前过期 提供冗余时间
-	expiresIn = int(0.9 * float64(expiresIn))
 	d := time.Duration(expiresIn) * time.Second
-	_ = app.AccessToken.Cache.Save(app.Config.AgentId, accessToken, d)
+	_ = app.AccessToken.Cache.Save(cacheKey, accessToken, d)
 
 	if app.Corporation.Logger != nil {
 		app.Corporation.Logger.Printf("%s %s %d\n", "refreshAccessTokenFromWXServer", accessToken, expiresIn)
 	}
 
+	return
+}
+
+/*
+NoticeAccessTokenExpire 只需将本地存储的 access_token 删除，即完成了 access_token 已过期的 主动通知
+
+retry 请求的时候，会发现本地没有 access_token ，从而触发refresh
+*/
+func NoticeAccessTokenExpire(app *App) (err error) {
+	if app.Corporation.Logger != nil {
+		app.Corporation.Logger.Println("NoticeAccessTokenExpire")
+	}
+
+	cacheKey := app.Config.AgentId + app.Config.Secret // 企业微信-系统应用没有 agentid ，所以需要secret 辅助
+	err = app.AccessToken.Cache.Delete(cacheKey)
 	return
 }
 
