@@ -1,4 +1,4 @@
-// Copyright 2020 FastWeGo
+// Copyright 2021 FastWeGo
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ const (
 )
 
 /*
-获取应用
+获取指定的应用详情
 
 
 
@@ -48,7 +48,7 @@ func AgentGet(ctx *corporation.App, params url.Values) (resp []byte, err error) 
 }
 
 /*
-获取应用
+获取access_token对应的应用列表
 
 
 
@@ -113,7 +113,7 @@ func MenuDelete(ctx *corporation.App, params url.Values) (resp []byte, err error
 }
 
 /*
-设置工作台自定义展示
+设置应用在工作台展示的模版
 
 
 
@@ -126,7 +126,7 @@ func SetWorkbenchTemplate(ctx *corporation.App, payload []byte) (resp []byte, er
 }
 
 /*
-设置工作台自定义展示
+获取应用在工作台展示的模版
 
 
 
@@ -139,7 +139,7 @@ func GetWorkbenchTemplate(ctx *corporation.App, payload []byte) (resp []byte, er
 }
 
 /*
-设置工作台自定义展示
+设置应用在用户工作台展示的数据
 
 
 

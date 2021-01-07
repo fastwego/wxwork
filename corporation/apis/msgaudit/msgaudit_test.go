@@ -1,4 +1,4 @@
-// Copyright 2020 FastWeGo
+// Copyright 2021 FastWeGo
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -98,6 +98,42 @@ func TestGetPermitUserList(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
 				t.Errorf("GetPermitUserList() gotResp = %v, want %v", gotResp, tt.wantResp)
+			}
+		})
+	}
+}
+func TestCheckSingleAgree(t *testing.T) {
+	mockResp := map[string][]byte{
+		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
+	}
+	var resp []byte
+	test.MockSvrHandler.HandleFunc(apiCheckSingleAgree, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(resp))
+	})
+
+	type args struct {
+		ctx     *corporation.App
+		payload []byte
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantResp []byte
+		wantErr  bool
+	}{
+		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp = mockResp[tt.name]
+			gotResp, err := CheckSingleAgree(tt.args.ctx, tt.args.payload)
+			//fmt.Println(string(gotResp), err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CheckSingleAgree() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotResp, tt.wantResp) {
+				t.Errorf("CheckSingleAgree() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}

@@ -1,9 +1,0 @@
-[book]
-authors = ["Ceelog"]
-language = "zh"
-multilingual = false
-src = "doc"
-
-[output.html]
-git-repository-url = "https://github.com/fastwego/corporation "
-git-repository-icon = "fa-github"

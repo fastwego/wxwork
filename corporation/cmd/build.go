@@ -59,7 +59,12 @@ func main() {
 
 	for _, group := range apiConfig {
 
-		if group.Package == pkgFlag {
+		if group.Package == pkgFlag || pkgFlag == "all" {
+
+			if group.Package == "oauth" {
+				continue
+			}
+
 			build(group)
 		}
 	}

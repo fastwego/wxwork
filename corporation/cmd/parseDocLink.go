@@ -116,7 +116,10 @@ func run() {
 
 			m2 := regexp.MustCompile(`请求方式.+(GET|POST)(.+请求地址.+(https://qyapi.weixin.qq.com/\S+))?`).FindStringSubmatch(line)
 
-			//fmt.Println(line,"\n", m2)
+			if len(m2) < 1 {
+				//fmt.Println(line, "\n", m2)
+				return
+			}
 
 			method := "POST"
 			if m2[1] != "" {
@@ -145,7 +148,7 @@ func run() {
 			if _, ok := apiUniqMap[parse.Path]; !ok {
 				apiUniqMap[parse.Path] = true
 			} else {
-				return
+				//return
 			}
 
 			_DESCRIPTION_ := ""
@@ -183,7 +186,7 @@ func run() {
 			}
 
 			tpl := strings.ReplaceAll(itemTpl, "_NAME_", _NAME_)
-			tpl = strings.ReplaceAll(tpl, "_DESCRIPTION_", _DESCRIPTION_)
+			tpl = strings.ReplaceAll(tpl, "_DESCRIPTION_", strings.ReplaceAll(_DESCRIPTION_, "\n", ""))
 			tpl = strings.ReplaceAll(tpl, "_REQUEST_", _REQUEST_)
 			tpl = strings.ReplaceAll(tpl, "_SEE_", _SEE_)
 			tpl = strings.ReplaceAll(tpl, "_FUNCNAME_", _FUNCNAME_)

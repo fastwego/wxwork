@@ -1,4 +1,4 @@
-// Copyright 2020 FastWeGo
+// Copyright 2021 FastWeGo
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,15 @@ func ExampleGetPermitUserList() {
 	var ctx *corporation.App
 
 	resp, err := msgaudit.GetPermitUserList(ctx)
+
+	fmt.Println(resp, err)
+}
+
+func ExampleCheckSingleAgree() {
+	var ctx *corporation.App
+
+	payload := []byte("{}")
+	resp, err := msgaudit.CheckSingleAgree(ctx, payload)
 
 	fmt.Println(resp, err)
 }
