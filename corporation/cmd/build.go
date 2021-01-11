@@ -140,6 +140,15 @@ func build(group ApiGroup) {
 			_FUNC_NAME_ = api.FuncName
 		}
 
+		isTplApi := false
+		if (group.Package == "material" && api.FuncName == "Get") || group.Package == "material" && api.FuncName == "Jssdk" {
+			file, err := ioutil.ReadFile("tpl/" + group.Package + "." + api.FuncName + ".tpl")
+			if err != nil {
+				continue
+			}
+			tpl = commentTpl + string(file)
+			isTplApi = true
+		}
 		tpl = strings.ReplaceAll(tpl, "_TITLE_", api.Name)
 		tpl = strings.ReplaceAll(tpl, "_DESCRIPTION_", api.Description)
 		tpl = strings.ReplaceAll(tpl, "_REQUEST_", api.Request)
@@ -160,6 +169,10 @@ func build(group ApiGroup) {
 		tpl = strings.ReplaceAll(tpl, "_API_PATH_", parseUrl.Path)
 
 		consts = append(consts, tpl)
+
+		if isTplApi { // 不用 test case
+			continue
+		}
 
 		// TestFunc
 		_TEST_ARGS_STRUCT_ := ""

@@ -40,21 +40,3 @@ func ExampleUploadImg() {
 
 	fmt.Println(resp, err)
 }
-
-func ExampleGet() {
-	var ctx *corporation.App
-
-	params := url.Values{}
-	resp, err := material.Get(ctx, params)
-
-	fmt.Println(resp, err)
-}
-
-func ExampleJssdk() {
-	var ctx *corporation.App
-
-	params := url.Values{}
-	resp, err := material.Jssdk(ctx, params)
-
-	fmt.Println(resp, err)
-}

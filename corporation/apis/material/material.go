@@ -18,6 +18,7 @@ package material
 import (
 	"io"
 	"mime/multipart"
+	"net/http"
 	"net/url"
 	"os"
 	"path"
@@ -107,8 +108,20 @@ See: https://work.weixin.qq.com/api/doc/90000/90135/90254
 
 GET https://qyapi.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
 */
-func Get(ctx *corporation.App, params url.Values) (resp []byte, err error) {
-	return ctx.Client.HTTPGet(apiGet + "?" + params.Encode())
+func Get(ctx *corporation.App, params url.Values, header http.Header) (resp *http.Response, err error) {
+	accessToken, err := ctx.AccessToken.GetAccessTokenHandler(ctx)
+	if err != nil {
+		return
+	}
+
+	req, err := http.NewRequest(http.MethodGet, corporation.WXServerUrl+apiGet+"?access_token="+accessToken+"&"+params.Encode(), nil)
+	if err != nil {
+		return
+	}
+
+	req.Header = header
+
+	return http.DefaultClient.Do(req)
 }
 
 /*
@@ -120,6 +133,16 @@ See: https://work.weixin.qq.com/api/doc/90000/90135/90255
 
 GET https://qyapi.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
 */
-func Jssdk(ctx *corporation.App, params url.Values) (resp []byte, err error) {
-	return ctx.Client.HTTPGet(apiJssdk + "?" + params.Encode())
+func Jssdk(ctx *corporation.App, params url.Values) (resp *http.Response, err error) {
+	accessToken, err := ctx.AccessToken.GetAccessTokenHandler(ctx)
+	if err != nil {
+		return
+	}
+
+	req, err := http.NewRequest(http.MethodGet, corporation.WXServerUrl+apiJssdk+"?access_token="+accessToken+"&"+params.Encode(), nil)
+	if err != nil {
+		return
+	}
+
+	return http.DefaultClient.Do(req)
 }
